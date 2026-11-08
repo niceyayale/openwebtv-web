@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TVBox Content Sources Explained: M3U, JSON and HLS Playlists - OpenWebTV - Browser Video Player</title>
+  <meta name="description" content="TVBox Content Sources Explained: M3U, JSON and HLS Playlists">
+  <meta name="keywords" content="tvbox, m3u, hls, streaming">
+  <meta name="author" content="OpenWebTV - Browser Video Player">
+  <meta property="og:title" content="TVBox Content Sources Explained: M3U, JSON and HLS Playlists">
+  <meta property="og:description" content="Browser-based TVBox-compatible video player - import content sources, search and play HLS/MP4 locally">
+  <meta property="og:url" content="https://niceyayale.github.io/openwebtv-web/blog/tvbox-content-sources-explained-m3u-json-and-hls-playlists.html">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-11-08">
+  <meta property="article:tag" content="tvbox, m3u, hls, streaming">
+  <link rel="canonical" href="https://niceyayale.github.io/openwebtv-web/blog/tvbox-content-sources-explained-m3u-json-and-hls-playlists.html">
+  <link rel="alternate" hreflang="en" href="https://niceyayale.github.io/openwebtv-web/blog/tvbox-content-sources-explained-m3u-json-and-hls-playlists.html">
+  <link rel="stylesheet" href="https://niceyayale.github.io/openwebtv-web/assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="https://niceyayale.github.io/openwebtv-web/" class="logo">OpenWebTV - Browser Video Player</a>
+      <nav>
+        <a href="https://openwebtv.com">Website</a>
+        <a href="https://niceyayale.github.io/openwebtv-web/blog/">Blog</a>
+        <a href="https://github.com/niceyayale/openwebtv-web">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container article-page">
+    <article>
+      <h1 class="article-title">TVBox Content Sources Explained: M3U, JSON and HLS Playlists</h1>
+      <div class="article-meta">
+        <time datetime="2026-11-08">2026-11-08</time>
+        <span class="tag">tvbox</span><span class="tag">m3u</span><span class="tag">hls</span><span class="tag">streaming</span>
+      </div>
+      <div class="article-content">
+        <h1>TVBox Content Sources Explained: M3U, JSON and HLS Playlists</h1>
+<p>TVBox-style applications are popular because they separate the player from the content. The player handles navigation, playback, and subtitles. A content source tells it where the channels, movies, and episodes live. Once you understand that split, adding a source, diagnosing an empty channel list, or moving from one player to another becomes much less mysterious.</p>
+<p>This article explains the three formats you will encounter most often — M3U playlists, TVBox JSON configurations, and HLS streams — and what to check when something does not play.</p>
+<h2>How TVBox-Style Players Work</h2>
+<p>A TVBox application is a front end. It does not usually host media. Instead, it reads a configuration that points to catalogs and stream URLs, then renders those catalogs as a browsable interface. The typical flow is:</p>
+<ol>
+<li>The player loads a source configuration, either from a URL or a local file.</li>
+<li>The configuration describes categories, lists, and playback rules.</li>
+<li>When you select an item, the player resolves the stream URL and hands it to a media engine.</li>
+<li>The media engine decodes the stream and shows it on screen.</li>
+</ol>
+<p>The same player can behave very differently depending on the source. If channels fail to load, the problem is usually in step one or two, not in the video decoder.</p>
+<h2>M3U and M3U8 Playlists</h2>
+<p>An M3U file is a plain-text list of media entries. The extended variant, M3U8, is UTF-8 encoded and is the format used by HLS. A minimal playlist looks like this:</p>
+<pre><code class="language-text">#EXTM3U
+#EXTINF:-1 tvg-id="news" tvg-name="News" group-title="News",News Channel
+https://example.com/live/news/index.m3u8
+#EXTINF:-1 group-title="Movies",Sample Movie
+https://example.com/vod/movie.mp4</code></pre>
+<p>Each <code>#EXTINF</code> line describes the next URL. Attributes such as <code>tvg-id</code>, <code>tvg-logo</code>, and <code>group-title</code> are hints for the player's channel guide and category view. They are not standardized in a strict way, so different players interpret them slightly differently.</p>
+<p>Practical checks for M3U sources:</p>
+<ul>
+<li>Encoding: Files saved as ANSI instead of UTF-8 may show garbled channel names. Re-save as UTF-8.</li>
+<li>Relative URLs: Some playlists use relative paths. If the list is loaded from a local file, the player may not know how to resolve them.</li>
+<li>Order and grouping: Groups appear in the order they first occur. If the list is huge, the channel view can become slow and hard to navigate.</li>
+<li>Expired entries: Live URLs change frequently. A playlist that worked last month may contain dead links today.</li>
+</ul>
+<p>The M3U format itself is simple, but it has no concept of metadata beyond the <code>#EXTINF</code> line. That is why larger catalogs often move to a JSON configuration instead.</p>
+<h3>Playlist Attributes and Compatibility</h3>
+<p>Attribute names are not enforced by a standard body. A player may ignore unknown attributes without warning, which is why the same playlist can look organized in one app and flat in another.</p>
+<h2>TVBox JSON Configuration</h2>
+<p>TVBox JSON sources describe more than a flat list. A configuration can define multiple sites, categories, search rules, and parsing behavior. The exact schema depends on the player, but the common pieces are:</p>
+<ul>
+<li>Sites: Named sources, each with a type and an API base.</li>
+<li>Categories: The tabs shown on the home screen, such as movies, series, and live.</li>
+<li>Search: A flag or endpoint that tells the player whether the site supports keyword search.</li>
+<li>Parsing rules: Instructions for extracting playable URLs from a page or API response.</li>
+</ul>
+<p>A simplified example illustrates the shape:</p>
+<pre><code class="language-json">{
+  "sites": [
+    {
+      "key": "demo",
+      "name": "Demo Catalog",
+      "type": 3,
+      "api": "https://example.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "categories": ["movie", "series"]
+    }
+  ]
+}</code></pre>
+<p>Two details matter more than the rest. First, <code>type</code> is player-specific; the same number can mean different things in different forks. Second, <code>api</code> endpoints often return data in a provider-specific shape, which is why some configurations include parsing rules or a separate "spider" component.</p>
+<h3>Diagnosing an Empty Catalog</h3>
+<p>When a JSON source loads but shows no content, check these in order:</p>
+<ol>
+<li>Is the JSON valid? A trailing comma or a comment can break strict parsers.</li>
+<li>Does the API return data when opened directly in a browser?</li>
+<li>Does the player support the declared <code>type</code>?</li>
+<li>Are the category names expected by the player present in the response?</li>
+</ol>
+<h2>HLS Streams and the <code>.m3u8</code> Extension</h2>
+<p>HLS (HTTP Live Streaming) is the delivery format behind most <code>.m3u8</code> URLs. It breaks a video into short segments and provides a playlist that the player follows. A master playlist lists variant streams at different bitrates:</p>
+<pre><code class="language-text">#EXTM3U
+#EXT-X-STREAM-INF:BANDWECH=1280000,RESOLUTION=640x360
+low/index.m3u8
+#EXT-X-STREAM-INF:BANDWECH=2560000,RESOLUTION=1280x720
+high/index.m3u8</code></pre>
+<p>The media playlist then lists <code>.ts</code> or <code>.m4s</code> segments. This design lets the player switch quality as bandwidth changes, which is why HLS works well on unstable connections.</p>
+<h3>Why the Same Stream Plays in Some Apps Only</h3>
+<p>Common playback problems and their usual causes:</p>
+<ul>
+<li>Playlist loads, video does not: The segment URLs may be relative to the playlist location and blocked by a referer check.</li>
+<li>Audio plays, video is black: The codec may not be supported by the browser or hardware decoder. H.264 is widely supported; HEVC support varies.</li>
+<li>Frequent buffering: The segment duration is long, the bitrate is too high for the connection, or the origin server is slow.</li>
+<li>Works in VLC but not in the browser: VLC supports many more containers and codecs. Browsers are stricter, especially with DRM.</li>
+</ul>
+<p>For browser-based players, HLS support depends on the engine. Safari and some mobile browsers play HLS natively. Most desktop browsers need a JavaScript library such as <a href="https://github.com/video-dev/hls.js" target="_blank" rel="noopener">HLS.js</a> to feed segments into the Media Source Extensions API. The <a href="https://datatracker.ietf.org/doc/html/rfc8216" target="_blank" rel="noopener">RFC 8216 specification</a> defines the protocol if you need the authoritative details.</p>
+<p>Desktop players have a wider decoder set. <a href="https://www.videolan.org/" target="_blank" rel="noopener">VLC</a>, <a href="https://kodi.tv/" target="_blank" rel="noopener">Kodi</a>, and <a href="https://mpv.io/" target="_blank" rel="noopener">MPV</a> can open containers and codecs that a browser refuses. <a href="https://ffmpeg.org/" target="_blank" rel="noopener">FFmpeg</a> is useful for inspection: <code>ffprobe -show_streams</code> reports the container, codec, and segment details behind a URL, which tells you whether the problem is the stream or the player.</p>
+<h2>Legal and Practical Considerations</h2>
+<p>Content sources are not the same as content rights. A player can open a stream; that does not mean the stream is licensed for your use in your country. Before relying on a source, confirm that it is authorized, that it does not require circumventing access controls, and that local law permits the use. Configuration files distributed publicly sometimes link to material that is not licensed, so treat unknown sources with caution.</p>
+<p>From a technical standpoint, also consider:</p>
+<ul>
+<li>Privacy: Some players and sources log playback behavior. A browser-based player that keeps data local has a smaller exposure surface than one that proxies every request through a third-party server.</li>
+<li>Stability: Public sources change or disappear without notice. Keep a short list of sources you control or have verified.</li>
+<li>Security: Treat configuration files as untrusted input. A malicious configuration may point to unexpected endpoints or trigger excessive requests.</li>
+</ul>
+<h2>Browser-Based Playback</h2>
+<p>Running a player in the browser avoids installing a desktop application and keeps playback state on the device. <a href="https://openwebtv.com" target="_blank" rel="noopener">OpenWebTV</a> is a browser-based TVBox-compatible player: it imports compatible source configurations, searches across imported sources, and plays HLS and MP4 streams locally without a server-side media proxy. The same checks described above still apply — a valid configuration and a reachable stream are prerequisites, regardless of which player you use.</p>
+<h2>FAQ</h2>
+<p><strong>What is the difference between M3U and M3U8?</strong></p>
+<p>M3U is the base playlist format; M3U8 specifies UTF-8 encoding and is the form used by HLS. In practice, many players accept either extension.</p>
+<p><strong>Why does my TVBox JSON show an empty catalog?</strong></p>
+<p>The usual causes are invalid JSON, an unsupported site <code>type</code>, or an API endpoint that returns an error. Open the API URL directly and compare its response with what the player expects.</p>
+<p><strong>Can a browser play HLS without a plugin?</strong></p>
+<p>Safari can. Most other desktop browsers require a JavaScript library such as HLS.js, or a server that repackages the stream into a supported format.</p>
+<p><strong>Is a <code>.m3u8</code> file the same as a video file?</strong></p>
+<p>No. It is a playlist that points to segments. The actual media is in the segment files referenced by the playlist.</p>
+<p><strong>Do source attributes like <code>tvg-id</code> matter?</strong></p>
+<p>They help the player group channels and display logos, but they are not guaranteed to be consistent across sources. A missing or duplicated <code>tvg-id</code> usually affects presentation, not playback.</p>
+<h2>Conclusion</h2>
+<p>M3U lists, TVBox JSON configurations, and HLS playlists solve different problems: a flat channel list, a catalog with rules, and segmented adaptive delivery. When a source fails, identify which layer is broken first — format, configuration, or stream — then check the corresponding details. That approach turns most "it does not play" reports into a short, specific checklist.</p>
+      </div>
+      <div class="article-cta">
+        <p>Explore more at <a href="https://openwebtv.com">OpenWebTV - Browser Video Player</a></p>
+        <a href="https://openwebtv.com" class="btn">Visit Website</a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 OpenWebTV - Browser Video Player. <a href="https://openwebtv.com">https://openwebtv.com</a></p>
+      <p><a href="https://github.com/niceyayale/openwebtv-web">View on GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>

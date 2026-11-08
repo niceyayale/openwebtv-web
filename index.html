@@ -8,44 +8,24 @@
   <meta name="keywords" content="online-tv, tvbox, video-player, m3u, iptv, hls, media-player">
   <meta property="og:title" content="OpenWebTV - Browser Video Player">
   <meta property="og:description" content="Browser-based TVBox-compatible video player - import content sources, search and play HLS/MP4 locally">
-  <meta property="og:url" content="https://openwebtv.com">
+  <meta property="og:url" content="https://niceyayale.github.io/openwebtv-web/">
   <meta property="og:type" content="website">
-  <link rel="canonical" href="https://openwebtv.com">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.6; color: #333; background: #f8f9fa;
-    }
-    .container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
-    .hero {
-      text-align: center; padding: 3rem 1rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white; border-radius: 12px; margin-bottom: 2rem;
-    }
-    .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .hero p { font-size: 1.2rem; opacity: 0.9; }
-    .section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: #333; }
-    .features { list-style: none; }
-    .features li { padding: 0.5rem 0; padding-left: 1.5rem; position: relative; }
-    .features li::before { content: "\2713"; position: absolute; left: 0; color: #667eea; font-weight: bold; }
-    .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
-    .badge { background: #eef2ff; color: #667eea; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; }
-    .cta { text-align: center; padding: 2rem; }
-    .btn {
-      display: inline-block; padding: 0.75rem 2rem; background: #667eea; color: white;
-      text-decoration: none; border-radius: 8px; font-weight: 600; transition: background 0.2s;
-    }
-    .btn:hover { background: #5568d3; }
-    .btn-secondary { background: #333; margin-left: 1rem; }
-    .btn-secondary:hover { background: #555; }
-    .footer { text-align: center; padding: 2rem; color: #666; font-size: 0.875rem; }
-    .footer a { color: #667eea; text-decoration: none; }
-  </style>
+  <link rel="canonical" href="https://niceyayale.github.io/openwebtv-web/">
+  <link rel="stylesheet" href="https://niceyayale.github.io/openwebtv-web/assets/style.css">
 </head>
 <body>
-  <div class="container">
+  <header class="site-header">
+    <div class="container">
+      <a href="https://niceyayale.github.io/openwebtv-web/" class="logo">OpenWebTV - Browser Video Player</a>
+      <nav>
+        <a href="https://openwebtv.com">Website</a>
+        <a href="https://niceyayale.github.io/openwebtv-web/blog/">Blog</a>
+        <a href="https://github.com/niceyayale/openwebtv-web">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
     <div class="hero">
       <h1>OpenWebTV - Browser Video Player</h1>
       <p>浏览器端 TVBox 兼容播放器</p>
@@ -54,36 +34,38 @@
     <div class="section">
       <h2>About</h2>
       <p>Browser-based TVBox-compatible video player - import content sources, search and play HLS/MP4 locally</p>
-      <div class="badges">
-        <span class="badge">Video Player</span>
+      <div class="badges"><span class="badge">Video Player</span>
 <span class="badge">HLS</span>
 <span class="badge">Browser-based</span>
 <span class="badge">TVBox</span>
-<span class="badge">Media</span>
-      </div>
+<span class="badge">Media</span></div>
     </div>
 
     <div class="section">
       <h2>Features</h2>
-      <ul class="features">
-        <li>Import TVBox-compatible content source configurations</li>
+      <ul class="features"><li>Import TVBox-compatible content source configurations</li>
 <li>Search across imported sources</li>
 <li>Play HLS and MP4 streams in the browser</li>
 <li>Local playback controls and history</li>
-<li>No server-side media proxying</li>
-      </ul>
+<li>No server-side media proxying</li></ul>
     </div>
-
+    
+    <div class="section">
+      <h2>Latest Articles</h2>
+      <p>Check out our technical articles and tutorials.</p>
+      <p style="margin-top:1rem"><a href="https://niceyayale.github.io/openwebtv-web/blog/" class="btn">Read Blog (1 articles)</a></p>
+    </div>
     <div class="section cta">
-      <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">Ready to explore OpenWebTV - Browser Video Player?</p>
+      <p style="margin-bottom:1.5rem;font-size:1.1rem">Ready to explore OpenWebTV - Browser Video Player?</p>
       <a href="https://openwebtv.com" class="btn">Visit Website</a>
       <a href="https://github.com/niceyayale/openwebtv-web" class="btn btn-secondary">View on GitHub</a>
     </div>
+  </main>
 
-    <div class="footer">
-      <p>&copy; 2026 OpenWebTV - Browser Video Player. All rights reserved.</p>
-      <p><a href="https://openwebtv.com">https://openwebtv.com</a> &middot; <a href="https://github.com/niceyayale/openwebtv-web">GitHub Repository</a></p>
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 OpenWebTV - Browser Video Player. <a href="https://openwebtv.com">https://openwebtv.com</a> &middot; <a href="https://github.com/niceyayale/openwebtv-web">GitHub</a></p>
     </div>
-  </div>
+  </footer>
 </body>
 </html>
